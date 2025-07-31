@@ -1,15 +1,22 @@
 import http from 'k6/http';
-import { check, sleep } from 'k6';
-
-export let options = {
-  vus: 1,
-  duration: '5s',
-};
+import { check } from 'k6';
 
 export default function () {
-  let res = http.get('https://test-api.k6.io');
-  check(res, {
-    'status is 200': (r) => r.status === 200,
+  let url = 'https://sua-api.com/login';
+  let payload = JSON.stringify({
+    email: 'usuario@teste.com',
+    senha: '123456',
   });
-  sleep(1);
+
+  let params = {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+
+  let res = http.post(url, payload, params);
+
+  check(res, {
+    'login feito com sucesso': (r) => r.status === 200,
+  });
 }
